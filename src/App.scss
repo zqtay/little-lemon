@@ -1,0 +1,25 @@
+/* Fonts */
+$font-markazi: "Markazi Text";
+$font-karla: "Karla";
+
+/* Colors */
+$color-primary1: #495E57;
+$color-primary2: #F4CE14;
+$color-secondary1: #EE9972;
+$color-secondary2: #FBDABB;
+$color-highlight1: #EDEFEE;
+$color-highlight2: #333333;
+
+/* Sizes */
+$container-width: 800px;
+
+/* Mixins */
+@mixin link-highlight {
+  color: $color-highlight2;
+  transition: color 0.15s;
+  transition-timing-function: ease-in-out;
+
+  &:hover, &:focus {
+    color: $color-primary2;
+  }
+}

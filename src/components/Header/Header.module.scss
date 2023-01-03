@@ -1,0 +1,13 @@
+@import "../../App.scss";
+
+header {
+  padding: 20px 0px;
+}
+
+header > .container {
+  justify-content: space-between !important;
+}
+
+img.logo {
+  height: 50px
+}

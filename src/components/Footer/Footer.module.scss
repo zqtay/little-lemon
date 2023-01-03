@@ -1,0 +1,57 @@
+@import "../../App.scss";
+
+footer {
+  background-color: $color-highlight1;
+  padding: 20px 0px;
+}
+
+footer > .container {
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+img.logo2 {
+  height: 200px
+}
+
+.grid-container {
+  display: flex;
+  flex-direction: row;
+  overflow-wrap: break-word; 
+  gap: 50px;
+  justify-content: space-between;
+  font-family: $font-karla;
+  font-size: 16px;
+  text-align: left;
+  margin-left: 100px;
+}
+
+.grid-label {
+  font-weight: bolder;
+  padding-bottom: 10px;
+}
+
+.grid-content > ul {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-weight: normal;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.grid-content > ul > li > a {
+  @include link-highlight;
+}
+
+.nav-footer > ul {
+  flex-direction: column;
+  gap: 5px;
+  text-align: left;
+}
+
+.nav-footer > ul > li > a {
+  font-weight: normal;
+}

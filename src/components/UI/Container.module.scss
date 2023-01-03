@@ -1,0 +1,9 @@
+@import "../../App.scss";
+
+.container {
+  width: $container-width;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
