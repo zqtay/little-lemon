@@ -1,9 +1,36 @@
 @import "../../App.scss";
 
 .container {
-  width: $container-width;
+  width: 400px;
   margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* Breakpoints */
+@media (min-width: #{$grid-breakpoints-sm}){
+  .container {
+    width: 500px;
+  }
+}
+@media (min-width: #{$grid-breakpoints-md}){
+  .container {
+    width: 700px;
+  }
+}
+@media (min-width: #{$grid-breakpoints-lg}){
+  .container {
+    width: 900px;
+  }
+}
+@media (min-width: #{$grid-breakpoints-xl}) {
+  .container {
+    width: 1100px;
+  }
+}
+@media (min-width: #{$grid-breakpoints-xxl}) {
+  .container {
+    width: 1300px;
+  }
 }

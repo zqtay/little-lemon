@@ -10,7 +10,10 @@ const Header = () => {
         <a href="/">
           <img className={styles.logo} alt="logo" src={logo}></img>
         </a>
-        <Nav></Nav>
+        <div className={styles["nav-container"]}>
+          <button className={styles["nav-button"]}>{">"}</button>
+          <Nav className={styles["nav-header"]}></Nav>
+        </div>
       </Container>
     </header>
   );

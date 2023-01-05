@@ -10,8 +10,13 @@ $color-secondary2: #FBDABB;
 $color-highlight1: #EDEFEE;
 $color-highlight2: #333333;
 
-/* Sizes */
-$container-width: 800px;
+/* Breakpoints */
+$grid-breakpoints-xs: 0px;
+$grid-breakpoints-sm: 576px;
+$grid-breakpoints-md: 768px;
+$grid-breakpoints-lg: 992px;
+$grid-breakpoints-xl: 1200px;
+$grid-breakpoints-xxl: 1400px;
 
 /* Mixins */
 @mixin link-highlight {

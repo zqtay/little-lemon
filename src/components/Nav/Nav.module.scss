@@ -2,7 +2,6 @@
 
 .nav ul {
   display: flex;
-  gap: 30px;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -11,9 +10,6 @@
 
 .nav li a {
   @include link-highlight;
-  text-align: center;
   text-decoration: none;
   font-family: $font-karla;
-  font-size: 16px;
-  font-weight: bold;
 }
