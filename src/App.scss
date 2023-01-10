@@ -9,6 +9,8 @@ $color-secondary1: #EE9972;
 $color-secondary2: #FBDABB;
 $color-highlight1: #EDEFEE;
 $color-highlight2: #333333;
+$color-shadow: #00000030;
+$color-transparent: #FFFFFF00;
 
 /* Breakpoints */
 $grid-breakpoints-xs: 0px;
@@ -19,12 +21,19 @@ $grid-breakpoints-xl: 1200px;
 $grid-breakpoints-xxl: 1400px;
 
 /* Mixins */
+@mixin transition-default($prop) {
+  transition: $prop 0.15s;
+  transition-timing-function: ease-in-out;
+}
+
 @mixin link-highlight {
   color: $color-highlight2;
-  transition: color 0.15s;
-  transition-timing-function: ease-in-out;
-
+  @include transition-default(color);
   &:hover, &:focus {
     color: $color-primary2;
   }
+}
+
+@mixin light-shadow {
+  box-shadow: 0 0 5px 0px $color-shadow;
 }
