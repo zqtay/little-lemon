@@ -2,7 +2,7 @@ import styles from "./Nav.module.scss";
 
 const navItems = [
   {text: "Home", link: "/"},
-  {text: "About", link: "/about"},
+  {text: "About", link: "/#about"},
   {text: "Menu", link: "/menu"},
   {text: "Reservations", link: "/book"},
   {text: "Order Online", link: "/order"},

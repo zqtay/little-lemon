@@ -1,7 +1,6 @@
 import styles from './Footer.module.scss';
-import Container from "../UI/Container";
+import Container from "../UI/Container/Container";
 import Nav from "../Nav/Nav";
-import logo2 from "../../logo2.png";
 
 const contactInfo = {
   "address": "1234 E 67th St, Chicago, IL 60608, United States",
@@ -16,7 +15,7 @@ const Footer = () => {
     <footer>
       <Container className={styles.container}>
         <a href="/">
-          <img className={styles.logo2} alt="logo2" src={logo2}></img>
+          <img className={styles.logo2} alt="logo2" src="./logo2.png"></img>
         </a>
         <div className={styles["grid-container"]}>
           <div>
@@ -37,7 +36,6 @@ const Footer = () => {
           </div>
           <div>
             <div className={styles["grid-label"]}>Social Media Links</div>
-
             <div className={styles["grid-content"]}>
               <ul>
                 <li><a href={contactInfo.instagram}>Instagram</a></li>

@@ -2,6 +2,28 @@
 $font-markazi: "Markazi Text";
 $font-karla: "Karla";
 
+body {
+  font-family: $font-karla, sans-serif;
+  font-size: 20px;
+}
+
+.heading {
+  font-family: $font-markazi, sans-serif;
+  font-weight: normal;
+  margin: 0;
+}
+
+h1 {
+  font-size: 4em;
+}
+h2 {
+  font-size: 3em;
+}
+h3 {
+  font-size: 2em;
+}
+
+
 /* Colors */
 $color-primary1: #495E57;
 $color-primary2: #F4CE14;
@@ -36,4 +58,12 @@ $grid-breakpoints-xxl: 1400px;
 
 @mixin light-shadow {
   box-shadow: 0 0 5px 0px $color-shadow;
+}
+
+@mixin scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }

@@ -1,11 +1,16 @@
 @import "../../App.scss";
 
 header {
+  position: sticky;
+  top: 0;
   padding: 20px 0px;
+  background-color: #FFFFFF;
+  @include light-shadow;
 }
 
 header > .container {
-  justify-content: space-between !important;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 img.logo {
@@ -18,13 +23,15 @@ img.logo {
 }
 
 .nav-button {
-  background-color: #FFFFFF00;
-  border-color: #FFFFFF00;
-  color: #000000;
+  background-color: $color-transparent;
+  border-color: $color-transparent;
+  color: $color-primary1;
   font-size: 40px;
   font-weight: bold;
   height: 50px;
   width: 70px;
+  padding: 0px;
+  cursor: pointer;
 }
 
 @media (max-width: #{$grid-breakpoints-lg}) {
@@ -33,13 +40,14 @@ img.logo {
   }
 
   .nav-header {
+    @include light-shadow;
     right: 0;
     display: none;
     position: absolute;
     z-index: 1;
     padding: 20px;
+    border-radius: 5px;
     background-color: #FFFFFF;
-    box-shadow: 0px 8px 16px 0px #E0E0E0;
 
     ul {
       flex-direction: column;
@@ -76,6 +84,6 @@ img.logo {
 
 .nav-header li a {
   text-align: center;
-  font-size: 16px;
+  font-size: 22px;
   font-weight: bold;
 }
