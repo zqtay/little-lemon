@@ -1,6 +1,7 @@
 import styles from "./Hero.module.scss";
 import Button from "../../UI/Button/Button";
 import Container from "../../UI/Container/Container";
+import { ROOT_URL } from "../../../Util";
 
 const Hero = () => {
   return (
@@ -12,7 +13,7 @@ const Hero = () => {
           <p>We are a family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist.</p>
           <Button primary>Reserve a Table</Button>
         </div>
-        <img className={styles.pic} alt="hero-pic" src="./pics/istockphoto-104704117-1024x1024.jpg"></img>
+        <img className={styles.pic} alt="hero-pic" src={`${ROOT_URL}/pics/istockphoto-104704117-1024x1024.jpg`}></img>
       </Container>
     </div>
   );

@@ -1,6 +1,7 @@
 import styles from './Footer.module.scss';
 import Container from "../UI/Container/Container";
 import Nav from "../Nav/Nav";
+import { ROOT_URL } from "../../Util";
 
 const contactInfo = {
   "address": "1234 E 67th St, Chicago, IL 60608, United States",
@@ -15,7 +16,7 @@ const Footer = () => {
     <footer>
       <Container className={styles.container}>
         <a href="/">
-          <img className={styles.logo2} alt="logo2" src="./logo2.png"></img>
+          <img className={styles.logo2} alt="logo2" src={`${ROOT_URL}/logo2.png`}></img>
         </a>
         <div className={styles["grid-container"]}>
           <div>

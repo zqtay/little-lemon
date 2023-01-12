@@ -1,5 +1,6 @@
 import styles from "./About.module.scss";
 import Container from "../../UI/Container/Container";
+import { ROOT_URL } from "../../../Util";
 
 const About = () => {
   return (
@@ -15,8 +16,8 @@ const About = () => {
           </p>
         </div>
         <div className={styles.pic}>
-          <img className={styles.pic1} alt="about-pic" src="./pics/istockphoto-1160577908-1024x1024.jpg"></img>
-          <img className={styles.pic2} alt="about-pic" src="./pics/istockphoto-1316145932-1024x1024.jpg"></img>
+          <img className={styles.pic1} alt="about-pic" src={`${ROOT_URL}/pics/istockphoto-1160577908-1024x1024.jpg`}></img>
+          <img className={styles.pic2} alt="about-pic" src={`${ROOT_URL}/pics/istockphoto-1316145932-1024x1024.jpg`}></img>
         </div>
       </Container>
     </div>
