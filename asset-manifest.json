@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/little-lemon/static/css/main.904c3a71.css",
+    "main.css": "/little-lemon/static/css/main.2812967f.css",
     "main.js": "/little-lemon/static/js/main.052d1968.js",
     "static/js/787.a2f6b77c.chunk.js": "/little-lemon/static/js/787.a2f6b77c.chunk.js",
     "index.html": "/little-lemon/index.html",
-    "main.904c3a71.css.map": "/little-lemon/static/css/main.904c3a71.css.map",
+    "main.2812967f.css.map": "/little-lemon/static/css/main.2812967f.css.map",
     "main.052d1968.js.map": "/little-lemon/static/js/main.052d1968.js.map",
     "787.a2f6b77c.chunk.js.map": "/little-lemon/static/js/787.a2f6b77c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.904c3a71.css",
+    "static/css/main.2812967f.css",
     "static/js/main.052d1968.js"
   ]
 }
