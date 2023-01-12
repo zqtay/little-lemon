@@ -22,3 +22,9 @@
   flex-grow: 1;
   flex-basis: 0;
 }
+
+@media (max-width: #{$grid-breakpoints-lg}){
+  .card-list {
+    gap: 10px;
+  }
+}

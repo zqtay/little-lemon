@@ -13,7 +13,7 @@ const Button = (props) => {
   }
 
   if (props.wide) {
-    className += styles.wide;
+    className += " " + styles.wide;
   }
 
   let onClick = (!props.href || props.href.length === 0) ?

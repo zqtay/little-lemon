@@ -1,7 +1,7 @@
 @import "../../../App.scss";
 
 .container {
-  width: 400px;
+  width: 300px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -12,26 +12,26 @@
 /* Breakpoints */
 @media (min-width: #{$grid-breakpoints-sm}){
   .container {
-    width: 500px;
+    width: #{$grid-breakpoints-xs};
   }
 }
 @media (min-width: #{$grid-breakpoints-md}){
   .container {
-    width: 700px;
+    width: #{$grid-breakpoints-sm};
   }
 }
 @media (min-width: #{$grid-breakpoints-lg}){
   .container {
-    width: 900px;
+    width: #{$grid-breakpoints-md};
   }
 }
 @media (min-width: #{$grid-breakpoints-xl}) {
   .container {
-    width: 1100px;
+    width: #{$grid-breakpoints-lg};
   }
 }
 @media (min-width: #{$grid-breakpoints-xxl}) {
   .container {
-    width: 1300px;
+    width: #{$grid-breakpoints-xl};
   }
 }

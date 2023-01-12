@@ -1,12 +1,12 @@
 @import "../../../App.scss";
 
 .button {
-  padding: 12px 15px;
+  padding: 10px 15px;
   border-radius: 30px;
   border: 4px solid $color-transparent;
   height: fit-content;
   width: fit-content;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   cursor: pointer;
   @include light-shadow;

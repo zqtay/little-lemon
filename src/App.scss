@@ -4,7 +4,7 @@ $font-karla: "Karla";
 
 body {
   font-family: $font-karla, sans-serif;
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .heading {
@@ -14,13 +14,13 @@ body {
 }
 
 h1 {
-  font-size: 4em;
+  font-size: 50px;
 }
 h2 {
-  font-size: 3em;
+  font-size: 40px;
 }
 h3 {
-  font-size: 2em;
+  font-size: 30px;
 }
 
 
@@ -35,8 +35,9 @@ $color-shadow: #00000030;
 $color-transparent: #FFFFFF00;
 
 /* Breakpoints */
-$grid-breakpoints-xs: 0px;
-$grid-breakpoints-sm: 576px;
+$grid-breakpoints-xxs: 0px;
+$grid-breakpoints-xs: 375px;
+$grid-breakpoints-sm: 544px;
 $grid-breakpoints-md: 768px;
 $grid-breakpoints-lg: 992px;
 $grid-breakpoints-xl: 1200px;
