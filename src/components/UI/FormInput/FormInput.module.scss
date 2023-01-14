@@ -1,0 +1,28 @@
+@import "../../../App.scss";
+
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  label {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  input {
+    height: 40px;
+    border: 2px solid $color-highlight1;
+    border-radius: 10px;
+    padding: 0px 10px;
+    font-family: $font-karla;
+    font-size: 20px;
+    @include transition-default(border);
+    &:hover, &:focus, &::selection {
+      border-color: $color-primary1;
+    }
+    &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+      color: $color-highlight1;
+      opacity: 1; /* Firefox */
+    }
+  }
+}
