@@ -5,8 +5,8 @@ const FormInput = (props) => {
     <div className={styles.input}>
       <label>{props.label}</label>
       <input type={props.type} id={props.id} name={props.name} placeholder={props.placeholder} defaultValue={props.value} ref={props.useRef}></input>
+      <div className={styles.error}>{props.error}</div>
     </div>
-
   );
 };
 
