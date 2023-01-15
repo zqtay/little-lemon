@@ -1,7 +1,7 @@
 import styles from "./Button.module.scss";
 
 const Button = (props) => {
-  let className = styles.secondary;
+  let className = styles.primary;
   if (props.primary) {
     className = styles.primary;
   }
