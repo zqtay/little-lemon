@@ -1,14 +1,26 @@
 import styles from "./Booking.module.scss";
 import Button from "../UI/Button/Button";
 import Container from "../UI/Container/Container";
-import NumberPicker from "../UI/NumberPicker/NumberPicker";
 import FormInput from "../UI/FormInput/FormInput";
-import { useRef, useState } from "react";
-import { ROOT_URL } from "../../Util";
+import NumberPicker from "../UI/NumberPicker/NumberPicker";
+import Spinner from "../UI/Spinner/Spinner";
 
+import { simulateFetch } from "../../Util";
+import { useRef, useState } from "react";
+import { useNavigate } from 'react-router-dom';
+
+/* Index for pages */
 const PAGE_BOOKING = 0;
 const PAGE_PERSONAL = 1;
 const PAGE_CONFIRM = 2;
+
+/* State for form submission */
+const STATE_READY = 0;
+const STATE_PENDING = 1;
+const STATE_SUCCESS = 2;
+const STATE_FAILED = 3;
+
+const HEADER_TITLE = "Reserve a Table";
 
 const placeHolder = {
   fName: "John",
@@ -20,18 +32,25 @@ const placeHolder = {
 const Booking = () => {
   const [data, setData] = useState(null);
   const [page, setPage] = useState(PAGE_BOOKING);
+  const navigate = useNavigate();
+
+  const onClickHome = (e) => {
+    e.preventDefault();
+    navigate("/");
+  };
+
   return (
     <div className={styles.booking}>
-      <Container>
-        {page === PAGE_BOOKING && <BookingDetails data={data} setData={setData} setPage={setPage}></BookingDetails>}
+      <Container className={styles.container}>
+        {page === PAGE_BOOKING && <BookingDetails data={data} setData={setData} setPage={setPage} onClickHome={onClickHome}></BookingDetails>}
         {page === PAGE_PERSONAL && <PersonalDetails data={data} setData={setData} setPage={setPage}></PersonalDetails>}
-        {page === PAGE_CONFIRM && <ConfirmPage data={data} setPage={setPage}></ConfirmPage>}
+        {page === PAGE_CONFIRM && <ConfirmPage data={data} setPage={setPage} onClickHome={onClickHome}></ConfirmPage>}
       </Container>
     </div>
   );
 };
 
-const BookingDetails = ({ data, setData, setPage }) => {
+const BookingDetails = ({ data, setData, setPage, onClickHome }) => {
   const dateRef = useRef();
   const timeRef = useRef();
   const groupSizeRef = useRef();
@@ -47,13 +66,7 @@ const BookingDetails = ({ data, setData, setPage }) => {
 
   return (
     <>
-      <div className={styles.header}>
-        <h2>Booking Details</h2>
-        <BackButton onClick={(e) => {
-          e.preventDefault();
-          window.location.href = ROOT_URL;
-        }} />
-      </div>
+      <PageHeader subTitle="Booking Details" goBack={onClickHome} />
       <form className={styles.form}>
         <FormInput type="date" label="Date" value={data?.date} useRef={dateRef} />
         <FormInput type="time" label="Time" value={data?.time} useRef={timeRef} />
@@ -85,10 +98,7 @@ const PersonalDetails = ({ data, setData, setPage }) => {
 
   return (
     <>
-      <div className={styles.header}>
-        <h2>Personal Details</h2>
-        <BackButton onClick={() => setPage(PAGE_BOOKING)} />
-      </div>
+      <PageHeader subTitle="Personal Details" goBack={() => setPage(PAGE_BOOKING)} />
       <form className={styles.form}>
         <FormInput type="text" label="First Name" placeholder={"e.g. " + placeHolder.fName} value={data.fName} useRef={fNameRef} />
         <FormInput type="text" label="Last Name" placeholder={"e.g. " + placeHolder.lName} value={data.lName} useRef={lNameRef} />
@@ -100,35 +110,80 @@ const PersonalDetails = ({ data, setData, setPage }) => {
   );
 };
 
-const ConfirmPage = ({ data, setPage }) => {
-  const [status, setStatus] = useState();
+const ConfirmPage = ({ data, setPage, onClickHome }) => {
+  const [state, setState] = useState(STATE_READY);
 
-  const onClick = (e) => {
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: 'React POST Request Example' })
-    };
-    fetch('https://reqres.in/api/posts', requestOptions)
-      .then(response => response.json())
-      .then(data => this.setState({ postId: data.id }));
+  const onClickSubmit = (e) => {
+    setState(STATE_PENDING);
+    simulateFetch(0.5).then(res => {
+      if (res.status === 200) {
+        setState(STATE_SUCCESS);
+      }
+      else {
+        setState(STATE_FAILED);
+      }
+    });
   };
 
   return (
     <>
-      <div className={styles.header}>
-        <h2>Confirmation</h2>
-        <BackButton onClick={() => setPage(PAGE_PERSONAL)} />
+      <PageHeader subTitle="Confirmation" goBack={() => setPage(PAGE_PERSONAL)} />
+      <div className={styles.confirm}>
+        <BookingSummary data={data} />
+        <BookingConfirmStatus state={state} />
+        {(state !== STATE_SUCCESS) ?
+          <Button primary wide onClick={onClickSubmit}>Submit</Button> :
+          <Button primary wide onClick={onClickHome}>Home</Button>
+        }
       </div>
-      <div>{status}</div>
-      <Button primary wide onClick={onClick}>Submit</Button>
     </>
   );
 };
 
-const BackButton = ({ onClick }) => {
+const PageHeader = ({ subTitle, goBack }) => {
   return (
-    <div className={styles["back-button"]} onClick={onClick}>{`< Back`}</div>
+    <div className={styles.header}>
+      <h2>{HEADER_TITLE}</h2>
+      <div>
+        <div className={styles["back-button"]} onClick={goBack}>{`<`}</div>
+        <h3>{subTitle}</h3>
+      </div>
+    </div>
+  );
+};
+
+const BookingSummary = ({ data }) => {
+  return (
+    <table className={styles["summary-table"]}>
+      <tbody>
+        <BookingSummaryRow name="Date & Time" value={`${data.date} ${data.time}`} />
+        <BookingSummaryRow name="Group Size" value={data.groupSize} />
+        <tr className={styles.spacer}></tr>
+        <BookingSummaryRow name="Name" value={`${data.fName} ${data.lName}`} />
+        <BookingSummaryRow name="Phone Number" value={data.phone} />
+        <BookingSummaryRow name="Email Address" value={data.email} />
+      </tbody>
+    </table>
+  );
+};
+
+const BookingSummaryRow = ({ name, value }) => {
+  return (
+    <tr>
+      <td>{`${name}`}</td>
+      <td>{value}</td>
+    </tr>
+  );
+};
+
+const BookingConfirmStatus = ({ state }) => {
+  return (
+    <div className={styles["confirm-status"]}>
+      {(state === STATE_READY) && `Click below to submit your reservation.`}
+      {(state === STATE_PENDING) && <Spinner />}
+      {(state === STATE_SUCCESS) && `Your reservation is confirmed. Click below to go back to homepage.`}
+      {(state === STATE_FAILED) && `Something went wrong. Please try again.`}
+    </div>
   );
 };
 
