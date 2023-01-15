@@ -16,6 +16,10 @@ const Button = (props) => {
     className += " " + styles.wide;
   }
 
+  if (props.disabled) {
+    className += " " + styles.disabled;
+  }
+
   let onClick = (!props.href || props.href.length === 0) ?
     props.onClick :
     (e) => {
@@ -24,7 +28,7 @@ const Button = (props) => {
     };
 
   return (
-    <button className={`${styles.button} ${className}`} onClick={onClick} type="button">
+    <button className={`${styles.button} ${className}`} disabled={props.disabled} onClick={onClick} type="button">
       {(typeof(props.children) === "string") ? props.children : props.text}
     </button>
   );

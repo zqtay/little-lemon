@@ -43,3 +43,9 @@
 .wide {
   width: 100%;
 }
+
+.disabled, .disabeld:hover, .disabled:focus {
+  background-color: #FFFFFF !important;
+  border-color: $color-highlight1  !important;
+  color: $color-highlight1 !important;
+}

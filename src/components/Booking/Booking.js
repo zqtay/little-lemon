@@ -131,9 +131,9 @@ const ConfirmPage = ({ data, setPage, onClickHome }) => {
       <div className={styles.confirm}>
         <BookingSummary data={data} />
         <BookingConfirmStatus state={state} />
-        {(state !== STATE_SUCCESS) ?
-          <Button primary wide onClick={onClickSubmit}>Submit</Button> :
-          <Button primary wide onClick={onClickHome}>Home</Button>
+        {(state !== STATE_SUCCESS)
+          ? <Button primary wide disabled={state === STATE_PENDING} onClick={onClickSubmit}>Submit</Button>
+          : <Button primary wide onClick={onClickHome}>Home</Button>
         }
       </div>
     </>
