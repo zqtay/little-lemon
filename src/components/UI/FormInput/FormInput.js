@@ -1,11 +1,42 @@
 import styles from "./FormInput.module.scss";
+import { useCallback, useEffect, useState } from "react";
+import { ValidationError } from "yup";
 
 const FormInput = (props) => {
+  const [error, setError] = useState("");
+
+  const validate = useCallback(() => {
+    try {
+      props.validator.validateSync(props.useRef.current.value);
+      setError("");
+      return true;
+    }
+    catch (err) {
+      if (err instanceof ValidationError) {
+        setError(err.message);
+      }
+      return false;
+    }
+  }, [props.useRef, props.validator]);
+
+  // Add the validate function to ref so it can be called externally
+  useEffect(() => {
+    props.useRef.current.validate = validate;
+  }, [props.useRef, validate]);
+
   return (
     <div className={styles.input}>
       <label>{props.label}</label>
-      <input type={props.type} id={props.id} name={props.name} placeholder={props.placeholder} defaultValue={props.value} ref={props.useRef}></input>
-      <div className={styles.error}>{props.error}</div>
+      <input
+        type={props.type}
+        id={props.id}
+        name={props.name}
+        placeholder={props.placeholder}
+        defaultValue={props.defaultValue}
+        onBlur={validate}
+        ref={props.useRef}
+      />
+      <div className={styles.error}>{error}</div>
     </div>
   );
 };

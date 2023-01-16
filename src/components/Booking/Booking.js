@@ -4,10 +4,11 @@ import Container from "../UI/Container/Container";
 import FormInput from "../UI/FormInput/FormInput";
 import NumberPicker from "../UI/NumberPicker/NumberPicker";
 import Spinner from "../UI/Spinner/Spinner";
-
 import { simulateFetch } from "../../Util";
+
 import { useRef, useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
 
 /* Index for pages */
 const PAGE_BOOKING = 0;
@@ -27,6 +28,32 @@ const placeHolder = {
   lName: "Doe",
   phone: "+12345678901",
   email: "john-doe@email.com"
+};
+
+/* Validation schema */
+const schema = {
+  date: Yup.date()
+    .required("Required")
+    .transform(
+      (value, originalValue) => {
+        return (originalValue === "") ? undefined : new Date(originalValue);
+      }
+    )
+    .min(Date.now() - 86400000, "Date cannot be in the past"),
+  time: Yup.string()
+    .required("Required")
+    .test(
+      "openingHours",
+      "Time should be within 10am to 8pm",
+      value => {
+        const minute = parseInt(value.split(":")[0]) * 60 + parseInt(value.split(":")[1]);
+        return minute >= (10 * 60) && minute < (20 * 60);
+      }
+    ),
+  fName: Yup.string().required("Required"),
+  lName: Yup.string().required("Required"),
+  phone: Yup.string().required("Required"),
+  email: Yup.string().required("Required").email("Invalid email address")
 };
 
 const Booking = () => {
@@ -56,20 +83,37 @@ const BookingDetails = ({ data, setData, setPage, onClickHome }) => {
   const groupSizeRef = useRef();
 
   const onClick = (e) => {
-    const newData = data === null ? {} : { ...data };
-    newData.date = dateRef.current.value;
-    newData.time = timeRef.current.value;
-    newData.groupSize = parseInt(groupSizeRef.current.innerText);
-    setData(newData);
-    setPage(PAGE_PERSONAL);
+    // Check inputs
+    let isValid = dateRef.current.validate();
+    isValid &= timeRef.current.validate();
+    if (isValid) {
+      const newData = data === null ? {} : { ...data };
+      newData.date = dateRef.current.value;
+      newData.time = timeRef.current.value;
+      newData.groupSize = parseInt(groupSizeRef.current.innerText);
+      setData(newData);
+      setPage(PAGE_PERSONAL);
+    }
   };
 
   return (
     <>
       <PageHeader subTitle="Booking Details" goBack={onClickHome} />
       <form className={styles.form}>
-        <FormInput type="date" label="Date" value={data?.date} useRef={dateRef} />
-        <FormInput type="time" label="Time" value={data?.time} useRef={timeRef} />
+        <FormInput
+          type="date"
+          label="Date"
+          defaultValue={data?.date}
+          validator={schema.date}
+          useRef={dateRef}
+        />
+        <FormInput
+          type="time"
+          label="Time"
+          defaultValue={data?.time}
+          validator={schema.time}
+          useRef={timeRef}
+        />
         <div className={styles["group-size"]}>
           <label>Group Size</label>
           <NumberPicker min={1} max={8} value={data?.groupSize} useRef={groupSizeRef} />
@@ -87,23 +131,58 @@ const PersonalDetails = ({ data, setData, setPage }) => {
   const emailRef = useRef();
 
   const onClick = (e) => {
-    const newData = data === null ? {} : { ...data };
-    newData.fName = fNameRef.current.value;
-    newData.lName = lNameRef.current.value;
-    newData.phone = phoneRef.current.value;
-    newData.email = emailRef.current.value;
-    setData(newData);
-    setPage(PAGE_CONFIRM);
+    // Check inputs
+    let isValid = fNameRef.current.validate();
+    isValid &= lNameRef.current.validate();
+    isValid &= phoneRef.current.validate();
+    isValid &= emailRef.current.validate();
+    if (isValid) {
+      const newData = data === null ? {} : { ...data };
+      newData.fName = fNameRef.current.value;
+      newData.lName = lNameRef.current.value;
+      newData.phone = phoneRef.current.value;
+      newData.email = emailRef.current.value;
+      setData(newData);
+      setPage(PAGE_CONFIRM);
+    }
   };
 
   return (
     <>
       <PageHeader subTitle="Personal Details" goBack={() => setPage(PAGE_BOOKING)} />
       <form className={styles.form}>
-        <FormInput type="text" label="First Name" placeholder={"e.g. " + placeHolder.fName} value={data.fName} useRef={fNameRef} />
-        <FormInput type="text" label="Last Name" placeholder={"e.g. " + placeHolder.lName} value={data.lName} useRef={lNameRef} />
-        <FormInput type="tel" label="Phone Number" placeholder={"e.g. " + placeHolder.phone} value={data.phone} useRef={phoneRef} />
-        <FormInput type="email" label="Email Address" placeholder={"e.g. " + placeHolder.email} value={data.email} useRef={emailRef} />
+        <FormInput
+          type="text"
+          label="First Name"
+          placeholder={"e.g. " + placeHolder.fName}
+          defaultValue={data.fName}
+          validator={schema.fName}
+          useRef={fNameRef}
+        />
+        <FormInput
+          type="text"
+          label="Last Name"
+          placeholder={"e.g. " + placeHolder.lName}
+          defaultValue={data.lName}
+          validator={schema.lName}
+          useRef={lNameRef}
+        />
+        <FormInput
+          type="tel"
+          label="Phone Number"
+          placeholder={"e.g. " + placeHolder.phone}
+          defaultValue={data.phone}
+          validator={schema.phone}
+          useRef={phoneRef}
+        />
+        <FormInput
+          type="email"
+          label="Email Address"
+          placeholder={"e.g. " + placeHolder.email}
+          defaultValue={data.email}
+          validator={schema.email}
+          useRef={emailRef}
+        />
         <Button primary wide onClick={onClick}>Next</Button>
       </form>
     </>
@@ -125,9 +204,16 @@ const ConfirmPage = ({ data, setPage, onClickHome }) => {
     });
   };
 
+  const onClickGoBack = (e) => {
+    if (state === STATE_READY || state === STATE_FAILED) {
+      // Do not allow going back if submission is success or pending
+      setPage(PAGE_PERSONAL);
+    }
+  };
+
   return (
     <>
-      <PageHeader subTitle="Confirmation" goBack={() => setPage(PAGE_PERSONAL)} />
+      <PageHeader subTitle="Confirmation" goBack={onClickGoBack} />
       <div className={styles.confirm}>
         <BookingSummary data={data} />
         <BookingConfirmStatus state={state} />
