@@ -1,6 +1,7 @@
 @import "../../../App.scss";
 
-.input {
+
+.input-field {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -10,7 +11,7 @@
     font-weight: bold;
   }
 
-  input {
+  input, select {
     height: 40px;
     outline: 2px solid $color-highlight1;
     border: 0px transparent;
@@ -22,9 +23,9 @@
     &:hover, &:focus {
       outline-color: $color-primary1;
     }
-    &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    &::placeholder {
       color: $color-highlight1;
-      opacity: 1; /* Firefox */
+      opacity: 1;
     }
   }
 
@@ -32,6 +33,6 @@
     height: 14px;
     text-align: left;
     font-size: 14px;
-    color: $color-warning;
+    color: $color-error;
   }
 }

@@ -19,24 +19,44 @@ const FormInput = (props) => {
     }
   }, [props.useRef, props.validator]);
 
+  const onChange = (e) => {
+    if (props.onChange) {
+      props.onChange(e);
+    }
+    validate();
+  };
+
   // Add the validate function to ref so it can be called externally
   useEffect(() => {
     props.useRef.current.validate = validate;
   }, [props.useRef, validate]);
 
   return (
-    <div className={styles.input}>
-      <label>{props.label}</label>
-      <input
-        type={props.type}
-        id={props.id}
-        name={props.name}
-        placeholder={props.placeholder}
-        defaultValue={props.defaultValue}
-        onBlur={validate}
-        ref={props.useRef}
-      />
-      <div className={styles.error}>{error}</div>
+    <div className={styles["input-field"]}>
+      <label htmlFor={props.id}>{props.label}</label>
+      {(props.type === "select" && props.options !== undefined)
+        ? <select
+          id={props.id}
+          name={props.name}
+          placeholder={props.placeholder}
+          defaultValue={props.defaultValue}
+          onChange={onChange}
+          onBlur={validate}
+          ref={props.useRef}
+        >
+          {props.options.map((e, i) => <option key={i}>{e}</option>)}
+        </select>
+        : <input
+          type={props.type}
+          id={props.id}
+          name={props.name}
+          placeholder={props.placeholder}
+          defaultValue={props.defaultValue}
+          onChange={onChange}
+          onBlur={validate}
+          ref={props.useRef}
+        />}
+      <div className={styles["error"]}>{error}</div>
     </div>
   );
 };

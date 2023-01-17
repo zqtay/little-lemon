@@ -2,28 +2,6 @@
 $font-markazi: "Markazi Text";
 $font-karla: "Karla";
 
-body {
-  font-family: $font-karla, sans-serif;
-  font-size: 16px;
-}
-
-.heading {
-  font-family: $font-markazi, sans-serif;
-  font-weight: normal;
-  margin: 0;
-}
-
-h1 {
-  font-size: 50px;
-}
-h2 {
-  font-size: 40px;
-}
-h3 {
-  font-size: 30px;
-}
-
-
 /* Colors */
 $color-primary1: #495E57;
 $color-primary2: #F4CE14;
@@ -33,7 +11,7 @@ $color-highlight1: #EDEFEE;
 $color-highlight2: #333333;
 $color-shadow: #00000030;
 $color-transparent: #FFFFFF00;
-$color-warning: #F02020;
+$color-error: #F02020;
 
 /* Breakpoints */
 $grid-breakpoints-xxs: 0px;
@@ -68,4 +46,25 @@ $grid-breakpoints-xxl: 1400px;
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+body {
+  font-family: $font-karla, sans-serif;
+  font-size: 16px;
+}
+
+.heading {
+  font-family: $font-markazi, sans-serif;
+  font-weight: normal;
+  margin: 0;
+}
+
+h1 {
+  font-size: 50px;
+}
+h2 {
+  font-size: 40px;
+}
+h3 {
+  font-size: 30px;
 }

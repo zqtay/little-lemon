@@ -2,11 +2,12 @@ import styles from "./Booking.module.scss";
 import Button from "../UI/Button/Button";
 import Container from "../UI/Container/Container";
 import FormInput from "../UI/FormInput/FormInput";
+import inputStyles from "../UI/FormInput/FormInput.module.scss";
 import NumberPicker from "../UI/NumberPicker/NumberPicker";
 import Spinner from "../UI/Spinner/Spinner";
-import { simulateFetch } from "../../Util";
+import { fetchAPI, submitAPI } from "../../api/api";
 
-import { useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 
@@ -20,6 +21,10 @@ const STATE_READY = 0;
 const STATE_PENDING = 1;
 const STATE_SUCCESS = 2;
 const STATE_FAILED = 3;
+
+/* Group size limits */
+export const GROUP_SIZE_MIN = 1;
+export const GROUP_SIZE_MAX = 8;
 
 const HEADER_TITLE = "Reserve a Table";
 
@@ -44,15 +49,22 @@ const schema = {
     .required("Required")
     .test(
       "openingHours",
-      "Time should be within 10am to 8pm",
+      "Time should be between 17:00 to 23:30",
       value => {
         const minute = parseInt(value.split(":")[0]) * 60 + parseInt(value.split(":")[1]);
-        return minute >= (10 * 60) && minute < (20 * 60);
+        return minute >= (17 * 60) && minute <= (23.5 * 60);
       }
     ),
   fName: Yup.string().required("Required"),
   lName: Yup.string().required("Required"),
-  phone: Yup.string().required("Required"),
+  phone: Yup.string().required("Required").test(
+    "phoneNumberFormat",
+    "Invalid phone number",
+    value => {
+      // Must start with + and include numbers, dashes, and spaces only
+      return (value.length > 1) && value.startsWith("+") && (value.match(/[^0-9|+|\-|\s]/) == null);
+    }
+  ),
   email: Yup.string().required("Required").email("Invalid email address")
 };
 
@@ -82,6 +94,22 @@ const BookingDetails = ({ data, setData, setPage, onClickHome }) => {
   const timeRef = useRef();
   const groupSizeRef = useRef();
 
+  // Set default time options for today
+  const initializeTimes = () => {
+    return fetchAPI(new Date());
+  };
+  // Reducer to update time options
+  const updateTimes = (state, event) => {
+    if (event.target.value !== "") {
+      return fetchAPI(new Date(event.target.value));
+    }
+    else {
+      return [];
+    }
+  };
+  const [availableTimes, setAvailableTimes] = useReducer(updateTimes, null, initializeTimes);
+
+  // Handle click to validate inputs and update data
   const onClick = (e) => {
     // Check inputs
     let isValid = dateRef.current.validate();
@@ -96,27 +124,43 @@ const BookingDetails = ({ data, setData, setPage, onClickHome }) => {
     }
   };
 
+  useEffect(() => {
+    // Set default selected date to today
+    if (data === null || data.date === undefined) {
+      // Get local datetime with ISO format
+      var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+      var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().split("T")[0];
+      const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+      const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().split("T")[0];
+      dateRef.current.value = localISOTime;
+    }
+  }, [data]);
+
   return (
     <>
       <PageHeader subTitle="Booking Details" goBack={onClickHome} />
       <form className={styles.form}>
         <FormInput
           type="date"
+          id="bookingForm-date"
           label="Date"
           defaultValue={data?.date}
           validator={schema.date}
+          onChange={setAvailableTimes}
           useRef={dateRef}
         />
         <FormInput
-          type="time"
+          type="select"
+          id="bookingForm-time"
           label="Time"
+          options={availableTimes}
           defaultValue={data?.time}
           validator={schema.time}
           useRef={timeRef}
         />
-        <div className={styles["group-size"]}>
+        <div className={inputStyles["input-field"]}>
           <label>Group Size</label>
-          <NumberPicker min={1} max={8} value={data?.groupSize} useRef={groupSizeRef} />
+          <NumberPicker min={GROUP_SIZE_MIN} max={GROUP_SIZE_MAX} value={data?.groupSize} useRef={groupSizeRef} />
         </div>
         <Button primary wide onClick={onClick}>Next</Button>
       </form>
@@ -153,6 +197,7 @@ const PersonalDetails = ({ data, setData, setPage }) => {
       <form className={styles.form}>
         <FormInput
           type="text"
+          id="bookingForm-fName"
           label="First Name"
           placeholder={"e.g. " + placeHolder.fName}
           defaultValue={data.fName}
@@ -161,6 +206,7 @@ const PersonalDetails = ({ data, setData, setPage }) => {
         />
         <FormInput
           type="text"
+          id="bookingForm-lName"
           label="Last Name"
           placeholder={"e.g. " + placeHolder.lName}
           defaultValue={data.lName}
@@ -169,6 +215,7 @@ const PersonalDetails = ({ data, setData, setPage }) => {
         />
         <FormInput
           type="tel"
+          id="bookingForm-phone"
           label="Phone Number"
           placeholder={"e.g. " + placeHolder.phone}
           defaultValue={data.phone}
@@ -177,6 +224,7 @@ const PersonalDetails = ({ data, setData, setPage }) => {
         />
         <FormInput
           type="email"
+          id="bookingForm-email"
           label="Email Address"
           placeholder={"e.g. " + placeHolder.email}
           defaultValue={data.email}
@@ -194,7 +242,7 @@ const ConfirmPage = ({ data, setPage, onClickHome }) => {
 
   const onClickSubmit = (e) => {
     setState(STATE_PENDING);
-    simulateFetch(0.5).then(res => {
+    submitAPI(data).then(res => {
       if (res.status === 200) {
         setState(STATE_SUCCESS);
       }
