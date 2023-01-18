@@ -5,6 +5,7 @@ import FormInput from "../../UI/FormInput/FormInput";
 import NumberPicker from "../../UI/NumberPicker/NumberPicker";
 import BookingHeader from "../BookingHeader/BookingHeader";
 import { PAGE_INDEX, GROUPSIZE_LIMIT, setInputValue, validateInputValue } from "../Booking";
+import { getCurrentLocalDate } from "../../../Util";
 import { fetchAPI } from "../../../api/api";
 import { useCallback, useEffect, useState } from "react";
 
@@ -53,10 +54,9 @@ const BookingForm = ({ data, setData, error, setError, setPage, onClickHome }) =
     // Set default selected date to today and time options
     if (data.date === "") {
       // Get local datetime with ISO format
-      const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
-      const localISOTime = (new Date(Date.now() - tzoffset));
-      const availableTimes = fetchAPI(localISOTime);
-      setInputValue("date", localISOTime.toISOString().split("T")[0], setData);
+      const currDate = getCurrentLocalDate();
+      const availableTimes = fetchAPI(currDate);
+      setInputValue("date", currDate.toISOString().split("T")[0], setData);
       setAvailableTimes(availableTimes);
       setInputValue("time", availableTimes[0], setData);
     } else {
