@@ -4,61 +4,65 @@ import Button from "../../UI/Button/Button";
 import FormInput from "../../UI/FormInput/FormInput";
 import NumberPicker from "../../UI/NumberPicker/NumberPicker";
 import BookingHeader from "../BookingHeader/BookingHeader";
-import { PAGE_INDEX, validationSchema } from "../Booking";
-
+import { PAGE_INDEX, GROUPSIZE_LIMIT, setInputValue, validateInputValue } from "../Booking";
 import { fetchAPI } from "../../../api/api";
-import { useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-/* Group size limits */
-const GROUPSIZE_LIMIT = {
-  MIN: 1,
-  MAX: 8
-};
-
-const BookingForm = ({ data, setData, setPage, onClickHome }) => {
-  const dateRef = useRef();
-  const timeRef = useRef();
-  const groupSizeRef = useRef();
-
+const BookingForm = ({ data, setData, error, setError, setPage, onClickHome }) => {
   // Set default time options for today
-  const initializeTimes = () => {
-    return fetchAPI(new Date());
-  };
-  // Reducer to update time options
-  const updateTimes = (state, event) => {
-    if (event.target.value !== "") {
-      return fetchAPI(new Date(event.target.value));
+  const [availableTimes, setAvailableTimes] = useState([]);
+  const updateTimes = (e) => {
+    if (e.target.value !== "") {
+      return setAvailableTimes(fetchAPI(new Date(e.target.value)));
     }
     else {
       return [];
     }
   };
-  const [availableTimes, setAvailableTimes] = useReducer(updateTimes, null, initializeTimes);
 
   // Handle click to validate inputs and update data
   const onClick = (e) => {
     // Check inputs
-    let isValid = dateRef.current.validate();
-    isValid &= timeRef.current.validate();
+    let isValid = validateInputValue("date", data.date, setError);
+    isValid &= validateInputValue("time", data.time, setError);
+    isValid &= validateInputValue("groupSize", data.groupSize, setError);
     if (isValid) {
-      const newData = data === null ? {} : { ...data };
-      newData.date = dateRef.current.value;
-      newData.time = timeRef.current.value;
-      newData.groupSize = parseInt(groupSizeRef.current.innerText);
-      setData(newData);
       setPage(PAGE_INDEX.PERSONAL);
     }
   };
 
+  const setDate = useCallback((e) => {
+    const value = e.target.value;
+    setInputValue("date", value, setData);
+    validateInputValue("date", value, setError);
+    updateTimes(e);
+  }, [setData, setError]);
+
+  const setTime = useCallback((e) => {
+    const value = e.target.value;
+    setInputValue("time", value, setData);
+    validateInputValue("time", value, setError);
+  }, [setData, setError]);
+
+  const setGroupSize = useCallback((e) => {
+    setInputValue("groupSize", e, setData);
+    validateInputValue("groupSize", e, setError);
+  }, [setData, setError]);
+
   useEffect(() => {
-    // Set default selected date to today
-    if (data === null || data.date === undefined) {
+    // Set default selected date to today and time options
+    if (data.date === "") {
       // Get local datetime with ISO format
       const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
-      const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().split("T")[0];
-      dateRef.current.value = localISOTime;
+      const localISOTime = (new Date(Date.now() - tzoffset));
+      const availableTimes = fetchAPI(localISOTime);
+      setInputValue("date", localISOTime.toISOString().split("T")[0], setData);
+      setAvailableTimes(availableTimes);
+      setInputValue("time", availableTimes[0], setData);
+    } else {
+      setAvailableTimes(fetchAPI(new Date(data.date)));
     }
-  }, [data]);
+  }, [data, setData]);
 
   return (
     <>
@@ -68,23 +72,28 @@ const BookingForm = ({ data, setData, setPage, onClickHome }) => {
           type="date"
           id="bookingForm-date"
           label="Date"
-          defaultValue={data?.date}
-          validator={validationSchema.date}
-          onChange={setAvailableTimes}
-          useRef={dateRef}
+          value={data?.date}
+          error={error?.date}
+          onChange={setDate}
         />
         <FormInput
           type="select"
           id="bookingForm-time"
           label="Time"
           options={availableTimes}
-          defaultValue={data?.time}
-          validator={validationSchema.time}
-          useRef={timeRef}
+          value={data?.time}
+          error={error?.time}
+          onChange={setTime}
         />
         <div className={inputStyles["input-field"]}>
           <label>Group Size</label>
-          <NumberPicker min={GROUPSIZE_LIMIT.MIN} max={GROUPSIZE_LIMIT.MAX} value={data?.groupSize} useRef={groupSizeRef} />
+          <NumberPicker
+            min={GROUPSIZE_LIMIT.MIN}
+            max={GROUPSIZE_LIMIT.MAX}
+            value={data?.groupSize}
+            error={error?.groupSize}
+            onChange={setGroupSize}
+          />
         </div>
         <Button primary wide onClick={onClick}>Next</Button>
       </form>

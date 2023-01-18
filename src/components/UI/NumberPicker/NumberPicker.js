@@ -1,30 +1,24 @@
 import styles from "./NumberPicker.module.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const NumberPicker = (props) => {
   const defaultValue = (props.value === undefined) ? props.min : props.value;
   const [number, setNumber] = useState(defaultValue);
-  const [warning, setWarning] = useState("");
+  const { onChange } = props;
+
+  useEffect(() => {
+    if (onChange) {
+      onChange(number)
+    }
+  }, [onChange, number])
 
   const onClickMinus = (e) => {
     e.preventDefault();
-    if (number <= props.min) {
-      setWarning(`Minimum number is ${props.min}!`);
-    }
-    else {
-      setWarning("");
-    }
     setNumber(i => (i > props.min) ? i - 1 : i);
   };
 
   const onClickPlus = (e) => {
     e.preventDefault();
-    if (number >= props.max) {
-      setWarning(`Maximum number is ${props.max}!`);
-    }
-    else {
-      setWarning("");
-    }
     setNumber(i => (i < props.max) ? i + 1 : i);
   };
 
@@ -44,7 +38,7 @@ const NumberPicker = (props) => {
           </svg>
         </button>
       </div>
-      <div className={styles.warning}>{warning}</div>
+      <div className={styles.error}>{props.error}</div>
     </div>
   );
 };
